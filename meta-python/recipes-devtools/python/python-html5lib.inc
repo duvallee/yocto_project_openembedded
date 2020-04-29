@@ -13,5 +13,3 @@ RDEPENDS_${PN} += "\
     ${PYTHON_PN}-webencodings \
     ${PYTHON_PN}-xml \
 "
-
-BBCLASSEXTEND = "native nativesdk"

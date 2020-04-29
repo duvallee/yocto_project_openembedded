@@ -12,8 +12,6 @@ RDEPENDS_${PN} += "bash"
 RRECOMMENDS_${PN} += "kernel-module-ebtables \
     "
 
-UPSTREAM_CHECK_URI = "https://sourceforge.net/projects/ebtables/files/ebtables/"
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/ebtables/ebtables-v${PV}.tar.gz \
            file://ebtables-save \
            file://installnonroot.patch \

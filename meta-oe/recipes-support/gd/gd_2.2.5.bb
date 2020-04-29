@@ -16,7 +16,6 @@ DEPENDS = "freetype libpng jpeg zlib tiff"
 SRC_URI = "git://github.com/libgd/libgd.git;branch=GD-2.2 \
            file://0001-annotate.c-gdft.c-Replace-strncpy-with-memccpy-to-fi.patch \
            file://CVE-2018-1000222.patch \
-           file://CVE-2019-6978.patch \
           "
 
 SRCREV = "8255231b68889597d04d451a72438ab92a405aba"
@@ -36,8 +35,6 @@ EXTRA_OECONF += " --disable-rpath \
 
 EXTRA_OEMAKE = 'LDFLAGS="${LDFLAGS}"'
 
-DEBUG_OPTIMIZATION_append = " -Wno-error=maybe-uninitialized"
-
 do_install_append() {
     # cleanup buildpaths from gdlib.pc
     sed -i -e 's#${STAGING_DIR_HOST}##g' ${D}${libdir}/pkgconfig/gdlib.pc
@@ -51,5 +48,3 @@ FILES_${PN}-tools = "${bindir}/*"
 PROVIDES += "${PN}-tools"
 RPROVIDES_${PN}-tools = "${PN}-tools"
 RDEPENDS_${PN}-tools = "perl perl-module-strict"
-
-CVE_PRODUCT = "libgd"

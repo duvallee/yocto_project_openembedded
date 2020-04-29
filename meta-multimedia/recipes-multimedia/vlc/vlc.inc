@@ -5,7 +5,7 @@ SECTION = "multimedia"
 LICENSE = "GPL-2.0"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-DEPENDS = "coreutils-native fribidi libtool libgcrypt libgcrypt-native \
+DEPENDS = "fribidi libtool libgcrypt libgcrypt-native \
    dbus dbus-glib libxml2 gnutls \
    tremor faad2 ffmpeg flac fluidsynth alsa-lib \
    lua-native lua libidn \
@@ -21,12 +21,12 @@ SRC_URI = "http://download.videolan.org/pub/videolan/${BPN}/${PV}/${BP}.tar.xz"
 inherit autotools gettext pkgconfig distro_features_check
 
 ARM_INSTRUCTION_SET = "arm"
-export BUILDCC = "${BUILD_CC}"
+
 EXTRA_OECONF = "\
     --enable-run-as-root \
     --enable-xvideo \
     --disable-screen --disable-caca \
-    --enable-vlm \
+    --enable-httpd --enable-vlm \
     --enable-freetype \
     --enable-tremor \
     --enable-v4l2 --disable-aa --disable-faad \
@@ -35,31 +35,26 @@ EXTRA_OECONF = "\
     --without-kde-solid \
     --enable-realrtsp \
     --disable-libtar \
-    --enable-avcodec \
-    ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}${QT_DIR_NAME}/moc \
-    ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}${QT_DIR_NAME}/rcc \
-    ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}${QT_DIR_NAME}/uic \
+    ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}/moc4 \
+    ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}/rcc4 \
+    ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}/uic4 \
 "
 
-PACKAGECONFIG ?= " \
-    live555 dc1394 dv1394 notify fontconfig freetype dvdread png \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'x11', '', d)} \
-"
-
-inherit ${@bb.utils.contains('PACKAGECONFIG', 'qt5', 'qmake5_paths', '', d)}
-
+PACKAGECONFIG ?= " live555 dc1394 dv1394 notify fontconfig freetype dvdread png ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'x11 sdl vdpau', '', d)}"
 PACKAGECONFIG[mad] = "--enable-mad,--disable-mad,libmad"
+PACKAGECONFIG[sdl] = "--enable-sdl,--disable-sdl,virtual/libsdl libsdl-image "
 PACKAGECONFIG[a52] = "--enable-a52,--disable-a52,liba52"
 PACKAGECONFIG[jack] = "--enable-jack,--disable-jack,jack"
 PACKAGECONFIG[live555] = "--enable-live555,--disable-live555,live555"
 PACKAGECONFIG[libass] = "--enable-libass,--disable-libass,libass"
+PACKAGECONFIG[mkv] = "--enable-mkv,--disable-mkv,libmatroska libebml"
 PACKAGECONFIG[postproc] = "--enable-postproc,--disable-postproc,libpostproc"
-PACKAGECONFIG[libva] = "--enable-libva,--disable-libva,libva"
 PACKAGECONFIG[opencv] = "--enable-opencv,--disable-opencv,opencv"
+PACKAGECONFIG[libva] = "--enable-libva --enable-avcodec,--disable-libva --disable-avcodec,libva libav"
 PACKAGECONFIG[speex] = "--enable-speex,--disable-speex,speex"
 PACKAGECONFIG[gstreamer] = "--enable-gst-decode,--disable-gst-decode,gstreamer1.0 gstreamer1.0-plugins-base gst-plugins-bad"
 PACKAGECONFIG[vpx] = "--enable-vpx,--disable-vpx, libvpx"
-PACKAGECONFIG[qt5] = "--enable-qt,--disable-qt, qtbase-native qtx11extras qtsvg"
+PACKAGECONFIG[qt4] = "--enable-qt,--disable-qt, qt4-x11-free"
 PACKAGECONFIG[freerdp] = "--enable-freerdp,--disable-freerdp, freerdp"
 PACKAGECONFIG[dvbpsi] = "--enable-dvbpsi,--disable-dvbpsi, libdvbpsi"
 PACKAGECONFIG[samba] = "--enable-smbclient,--disable-smbclient, samba"
@@ -72,7 +67,7 @@ PACKAGECONFIG[dc1394] = "--enable-dc1394,--disable-dc1394,libdc1394"
 PACKAGECONFIG[dv1394] = "--enable-dv1394,--disable-dv1394,libraw1394 libavc1394"
 PACKAGECONFIG[svg] = "--enable-svg,--disable-svg,librsvg"
 PACKAGECONFIG[svgdec] = "--enable-svgdec,--disable-svgdec,librsvg cairo"
-PACKAGECONFIG[notify] = "--enable-notify,--disable-notify, libnotify gtk+3"
+PACKAGECONFIG[notify] = "--enable-notify,--disable-notify, libnotify gtk+"
 PACKAGECONFIG[fontconfig] = "--enable-fontconfig,--disable-fontconfig, fontconfig"
 PACKAGECONFIG[freetype] = "--enable-freetype,--disable-freetype, freetype"
 PACKAGECONFIG[dvdread] = "--enable-dvdread,--disable-dvdread, libdvdread libdvdcss"
@@ -81,13 +76,13 @@ PACKAGECONFIG[x11] = "--with-x --enable-xcb,--without-x --disable-xcb,  xcb-util
 PACKAGECONFIG[png] = "--enable-png,--disable-png,libpng"
 PACKAGECONFIG[vdpau] = "--enable-vdpau,--disable-vdpau,libvdpau"
 
-do_configure_append() {
-    sed -i -e s:'${top_builddir_slash}libtool':'${top_builddir_slash}'${TARGET_SYS}-libtool:g ${B}/doltlibtool
+do_configure_prepend() {
+    cp ${STAGING_DATADIR}/libtool/config.* ${S}/autotools/ || true
+}
 
-    # moc needs support: precreate build paths
-    for qtpath in adapters components/epg components/playlist components/sout dialogs managers styles util/buttons; do
-        mkdir -p "${B}/modules/gui/qt/$qtpath"
-    done
+do_configure_append() {
+    sed -i -e s:'$(MOC) $(DEFS) $(CPPFLAGS)':'$(MOC) $(DEFS)'\ -I${B}/include\ -DSYS_LINUX:g ${B}/modules/gui/qt4/Makefile
+    sed -i -e s:'${top_builddir_slash}libtool':'${top_builddir_slash}'${TARGET_SYS}-libtool:g ${B}/doltlibtool
 }
 
 # This recipe packages vlc as a library as well, so qt4 dependencies
@@ -99,11 +94,10 @@ FILES_libvlc = "${libdir}/lib*.so.*"
 
 FILES_${PN} += "\
     ${bindir}/vlc \
-    ${libdir}/vlc/vlc/libvlc_vdpau.so \
     ${datadir}/applications \
     ${datadir}/vlc/ \
     ${datadir}/icons \
-    ${datadir}/metainfo/vlc.appdata.xml \
+    ${lindir}/vlc/vlc/libvlc_vdpau.so \
 "
 
 FILES_${PN}-dbg += "\

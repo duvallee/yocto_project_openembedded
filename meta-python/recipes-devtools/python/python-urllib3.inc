@@ -16,6 +16,4 @@ RDEPENDS_${PN} += "\
     ${PYTHON_PN}-threading \
 "
 
-CVE_PRODUCT = "urllib3"
-
 BBCLASSEXTEND = "native nativesdk"

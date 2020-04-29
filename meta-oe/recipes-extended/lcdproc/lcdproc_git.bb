@@ -11,19 +11,17 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=18810669f13b87348459e611d31ab760 \
 
 BASEPV = "0.5.9"
 PV = "${BASEPV}+git${SRCPV}"
-SRCREV = "e08546c13a4157ed98cd4a8e9086e7acd66f93c0"
+SRCREV = "a4b5a7e058fdd0d914a61138748b589c0128b45b"
 SRC_URI = "git://github.com/lcdproc/lcdproc \
-           file://0001-Fix-parallel-build-fix-port-internal-make-dependenci.patch \
            "
 
 S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig update-rc.d
 
-LCD_DRIVERS ?= "all,!irman,!svga"
-LCD_DRIVERS_append_aarch64 = ",!serialVFD"
-LCD_DRIVERS_append_arm = ",!serialVFD"
+COMPATIBLE_HOST_arm_libc-musl = "null"
 
+LCD_DRIVERS ?= "all,!irman,!svga"
 LCD_DEFAULT_DRIVER ?= "curses"
 
 PACKAGECONFIG ??= "usb"

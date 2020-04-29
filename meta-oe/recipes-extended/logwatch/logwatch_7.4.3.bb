@@ -20,9 +20,9 @@ do_install() {
     install -m 0755 -d ${D}${datadir}/logwatch/dist.conf/logfiles
     install -m 0755 -d ${D}${datadir}/logwatch/dist.conf/services
     install -m 0755 -d ${D}${localstatedir}/cache/logwatch
-    cp -r -f conf/ ${D}${datadir}/logwatch/default.conf
-    cp -r -f scripts/ ${D}${datadir}/logwatch/scripts
-    cp -r -f lib ${D}${datadir}/logwatch/lib
+    mv conf/ ${D}${datadir}/logwatch/default.conf
+    mv scripts/ ${D}${datadir}/logwatch/scripts
+    mv lib ${D}${datadir}/logwatch/lib
     chown -R root:root ${D}${datadir}/logwatch
 
     install -m 0755 -d ${D}${mandir}/man1

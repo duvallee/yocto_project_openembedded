@@ -43,9 +43,3 @@ do_install() {
 }
 
 BBCLASSEXTEND = "native"
-
-# Fixed make clean error:
-#make -C /lib/modules/4.4.0-112-generic/build M=<snip>
-#make: *** /lib/modules/4.4.0-112-generic/build: No such file or directory.  Stop.
-#make: *** [clean] Error 2
-CLEANBROKEN = "1"

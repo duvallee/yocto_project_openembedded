@@ -13,10 +13,10 @@ inherit pkgconfig cmake gitpkgv
 PV = "2.0.0+gitr${SRCPV}"
 PKGV = "${GITPKGVTAG}"
 
-# 2.0.0-rc4
-SRCREV = "e21b72c95f857817b4b32b5ef5406355c005a9e8"
+SRCREV = "1648deb435ad52206f7aa2afe4b4dff71d9329bc"
 SRC_URI = "git://github.com/FreeRDP/FreeRDP.git \
     file://winpr-makecert-Build-with-install-RPATH.patch \
+    file://0001-Fix-gstreamer-1.0-detection.patch \
 "
 
 S = "${WORKDIR}/git"

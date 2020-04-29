@@ -13,7 +13,6 @@ SRC_URI = "${APACHE_MIRROR}/httpd/httpd-${PV}.tar.bz2 \
            file://0005-replace-lynx-to-curl-in-apachectl-script.patch \
            file://0006-apache2-fix-the-race-issue-of-parallel-installation.patch \
            file://0007-apache2-allow-to-disable-selinux-support.patch \
-           file://apache-configure_perlbin.patch \
           "
 
 SRC_URI_append_class-target = " \
@@ -53,7 +52,7 @@ EXTRA_OECONF_class-target = "\
     --sysconfdir=${sysconfdir}/${BPN} \
     --datadir=${datadir}/${BPN} \
     --libdir=${libdir} \
-    --libexecdir=${libexecdir}/${BPN}/modules \
+    --libexecdir=${libdir}/${BPN}/modules \
     --localstatedir=${localstatedir} \
     --enable-ssl \
     --with-dbm=sdbm \
@@ -78,7 +77,7 @@ EXTRA_OECONF_class-native = "\
     "
 
 do_configure_prepend() {
-    sed -i -e 's:$''{prefix}/usr/lib/cgi-bin:$''{libexecdir}/cgi-bin:g' ${S}/config.layout
+    sed -i -e 's:$''{prefix}/usr/lib/cgi-bin:$''{libdir}/cgi-bin:g' ${S}/config.layout
 }
 
 do_install_append_class-target() {
@@ -139,7 +138,7 @@ do_install_append_class-target() {
         install -m 0644 ${WORKDIR}/volatiles.04_apache2 ${D}${sysconfdir}/default/volatiles/04_apache2
     fi
 
-    rm -rf ${D}${localstatedir} ${D}${sbindir}/envvars*
+    rm -rf ${D}${localstatedir}
     chown -R root:root ${D}
 }
 
@@ -185,16 +184,11 @@ CONFFILES_${PN} = "${sysconfdir}/${BPN}/httpd.conf \
 
 # We override here rather than append so that .so links are
 # included in the runtime package rather than here (-dev)
-# and to get build, icons, error into the -dev package
-FILES_${PN}-dev = "${datadir}/${BPN}/build \
-                   ${datadir}/${BPN}/icons \
+# and to get icons, error into the -dev package
+FILES_${PN}-dev = "${datadir}/${BPN}/icons \
                    ${datadir}/${BPN}/error \
                    ${includedir}/${BPN} \
-                   ${bindir}/apxs \
                   "
-
-# Add the manual to -doc
-FILES_${PN}-doc += " ${datadir}/${BPN}/manual"
 
 FILES_${PN}-scripts += "${bindir}/dbmmanage"
 

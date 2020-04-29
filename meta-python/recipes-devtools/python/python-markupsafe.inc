@@ -10,5 +10,3 @@ PYPI_PACKAGE = "MarkupSafe"
 inherit pypi
 
 RDEPENDS_${PN} += "${PYTHON_PN}-stringold"
-
-BBCLASSEXTEND = "native nativesdk"

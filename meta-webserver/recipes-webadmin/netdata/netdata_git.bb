@@ -27,8 +27,6 @@ DEPENDS += "zlib util-linux"
 
 inherit pkgconfig autotools useradd systemd
 
-LDFLAGS += "-pthread"
-
 #systemd
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE_${PN} = "netdata.service"

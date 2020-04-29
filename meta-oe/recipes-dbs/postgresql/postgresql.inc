@@ -37,7 +37,7 @@ LEAD_SONAME = "libpq.so"
 # LDFLAGS for shared libraries
 export LDFLAGS_SL = "${LDFLAGS}"
 
-inherit autotools pkgconfig perlnative pythonnative useradd update-rc.d systemd gettext cpan-base
+inherit autotools pkgconfig perlnative pythonnative useradd update-rc.d systemd gettext
 
 CFLAGS += "-I${STAGING_INCDIR}/${PYTHON_DIR} -I${STAGING_INCDIR}/tcl8.6"
 
@@ -71,16 +71,6 @@ EXTRA_OECONF += "--enable-thread-safety --disable-rpath \
 "
 EXTRA_OECONF_sh4 += "--disable-spinlocks"
 EXTRA_OECONF_aarch64 += "--disable-spinlocks"
-
-DEBUG_OPTIMIZATION_remove_mips = " -Og"
-DEBUG_OPTIMIZATION_append_mips = " -O"
-BUILD_OPTIMIZATION_remove_mips = " -Og"
-BUILD_OPTIMIZATION_append_mips = " -O"
-
-DEBUG_OPTIMIZATION_remove_mipsel = " -Og"
-DEBUG_OPTIMIZATION_append_mipsel = " -O"
-BUILD_OPTIMIZATION_remove_mipsel = " -Og"
-BUILD_OPTIMIZATION_append_mipsel = " -O"
 
 PACKAGES_DYNAMIC += "^${PN}-plperl \
     ^${PN}-pltcl \
@@ -116,10 +106,6 @@ python populate_packages_prepend() {
 
 }
 
-# This will make native perl use target settings (for include dirs etc.)
-export PERLCONFIGTARGET = "${@is_target(d)}"
-export PERL_ARCHLIB = "${STAGING_LIBDIR}${PERL_OWN_DIR}/perl5/${@get_perl_version(d)}/${@get_perl_arch(d)}"
-
 do_configure() {
     # do_configure
     autotools_do_configure
@@ -133,7 +119,7 @@ do_configure() {
     BLIBNA="\${STAGING_BASE_LIBDIR_NATIVE}"
     sed -i -e "/^perl_archlibexp/s:${LIBPNA}:${STAGING_LIBDIR}:g" \
         ${B}/src/Makefile.global
-    sed -i -e "/^perl_privlibexp/s:${libdir}:${STAGING_LIBDIR}:g" \
+    sed -i -e "/^perl_privlibexp/s:${LIBPNA}:${STAGING_LIBDIR}:g" \
         ${B}/src/Makefile.global
     # remove the rpath, replace with correct lib path
     sed -i \
@@ -280,9 +266,7 @@ FILES_${PN}-timezone = "${datadir}/${BPN}/timezone \
     ${datadir}/${BPN}/timezonesets \
 "
 RDEPENDS_${PN} += "${PN}-timezone"
-FILES_${PN}-server-dev = "${includedir}/${BPN}/server \
-                          ${libdir}/${BPN}/pgxs \
-"
+FILES_${PN}-server-dev = "${includedir}/${BPN}/server"
 
 FILES_libecpg = "${libdir}/libecpg*${SOLIBS}"
 FILES_libecpg-dev = "${libdir}/libecpg*${SOLIBSDEV} \

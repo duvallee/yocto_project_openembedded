@@ -38,7 +38,6 @@ EXTRA_OECMAKE = " \
     -DENABLE_GOOGLE_AUTH=OFF \
     -DENABLE_WEATHER=OFF \
     -D${LKSTRFTIME} \
-    -DLIB_SUFFIX=${@d.getVar('baselib').replace('lib', '')} \
 "
 
 PACKAGECONFIG ??= ""

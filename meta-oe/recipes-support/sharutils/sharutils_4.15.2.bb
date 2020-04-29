@@ -20,5 +20,3 @@ do_install_append() {
         rmdir --ignore-fail-on-non-empty ${D}${libdir}
     fi
 }
-
-BBCLASSEXTEND = "native nativesdk"

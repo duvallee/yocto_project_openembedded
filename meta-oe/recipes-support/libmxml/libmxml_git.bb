@@ -1,14 +1,13 @@
 DESCRIPTION = "Tiny XML Library"
-LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
+LICENSE = "Mini-XML-License"
+LIC_FILES_CHKSUM = "file://COPYING;md5=a6ba38606d63bb042c5d8cfee182e120"
 HOMEPAGE = "https://www.msweet.org/mxml/"
 BUGTRACKER = "https://github.com/michaelrsweet/mxml/issues"
 
 SRC_URI = "git://github.com/michaelrsweet/mxml.git"
-SRCREV = "c7755b6992a2afdd34dde47fc9be97f1237cfded"
+SRCREV = "ba3cca82e15a88a9cc6afb60f059288a99afc703"
 S = "${WORKDIR}/git"
-# v3.0
-PV = "3.0"
+PV = "2.12+git${SRCPV}"
 
 CONFIGUREOPTS = " --prefix=${prefix} \
                   --bindir=${bindir} \
@@ -29,8 +28,6 @@ CONFIGUREOPTS = " --prefix=${prefix} \
                 "
 
 do_configure() {
-    install -m 0755 ${STAGING_DATADIR_NATIVE}/gnu-config/config.guess ${S}
-    install -m 0755 ${STAGING_DATADIR_NATIVE}/gnu-config/config.sub ${S}
     ./configure ${CONFIGUREOPTS} --enable-shared
 }
 

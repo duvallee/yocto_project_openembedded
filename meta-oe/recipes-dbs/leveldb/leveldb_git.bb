@@ -35,7 +35,3 @@ do_install() {
 
 PACKAGES =+ "${PN}-ptest"
 FILES_${PN}-ptest = "${bindir}"
-
-# Do not try to build lib32-leveldb for mips64, but allow libn32-leveldb.
-#
-COMPATIBLE_HOST_mipsarcho32_pn-lib32-leveldb = "null"

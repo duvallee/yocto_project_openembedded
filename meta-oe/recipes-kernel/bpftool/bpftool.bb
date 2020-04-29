@@ -10,9 +10,7 @@ inherit bash-completion kernelsrc kernel-arch
 
 do_populate_lic[depends] += "virtual/kernel:do_patch"
 
-EXTRA_OEMAKE = "V=1 -C ${S}/tools/bpf/bpftool O=${B} CROSS=${TARGET_PREFIX} CC="${CC}" LD="${LD}" AR=${AR} ARCH=${ARCH}"
-
-SECURITY_CFLAGS = ""
+EXTRA_OEMAKE = "-C ${S}/tools/bpf/bpftool O=${B} CROSS=${TARGET_PREFIX} CC="${CC}" LD="${LD}" AR=${AR} ARCH=${ARCH}"
 
 do_configure[depends] += "virtual/kernel:do_shared_workdir"
 
@@ -29,7 +27,7 @@ do_install() {
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 python do_package_prepend() {
-    d.setVar('PKGV', d.getVar("KERNEL_VERSION").split("-")[0])
+    d.setVar('PKGV', d.getVar("KERNEL_VERSION", True).split("-")[0])
 }
 
 B = "${WORKDIR}/${BPN}-${PV}"
