@@ -2,14 +2,14 @@ SUMMARY = "A super-fast templating language that borrows the best ideas from the
 HOMEPAGE = "http://www.makotemplates.org/"
 SECTION = "devel/python"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=1bb21fa2d2f7a534c884b990430a6863"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=df7e6c7c82990acf0228a55e00d29bc9"
 
 PYPI_PACKAGE = "Mako"
 
 inherit pypi
 
-SRC_URI[md5sum] = "d739720f3f0d6a1cb6a96ea7a4760c3e"
-SRC_URI[sha256sum] = "0728c404877cd4ca72c409c0ea372dc5f3b53fa1ad2bb434e1d216c0444ff1fd"
+SRC_URI[md5sum] = "6c3f2da0b74af529a4c4a537d0848bf2"
+SRC_URI[sha256sum] = "a36919599a9b7dc5d86a7a8988f23a9a3a3d083070023bab23d64f7f1d1e0a4b"
 
 RDEPENDS_${PN} = " \
     ${PYTHON_PN}-html \

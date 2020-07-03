@@ -21,6 +21,7 @@ SRC_URI = " \
     file://nginx.init \
     file://nginx-volatile.conf \
     file://nginx.service \
+    file://nginx-fix-pidfile.patch \
 "
 
 inherit siteinfo update-rc.d useradd systemd
@@ -40,6 +41,7 @@ PACKAGECONFIG ??= "ssl"
 
 PACKAGECONFIG[http2] = "--with-http_v2_module,,"
 PACKAGECONFIG[ssl] = "--with-http_ssl_module,,openssl"
+PACKAGECONFIG[http-auth-request] = "--with-http_auth_request_module,,"
 
 do_configure () {
     if [ "${SITEINFO_BITS}" = "64" ]; then
@@ -92,9 +94,9 @@ do_install () {
             >> ${D}${sysconfdir}/tmpfiles.d/${BPN}.conf
     fi
     install -d ${D}${sysconfdir}/${BPN}
-    ln -snf ${localstatedir}/run/${BPN} ${D}${sysconfdir}/${BPN}/run
+    lnr ${D}${localstatedir}/run/${BPN} ${D}${sysconfdir}/${BPN}/run
     install -d ${D}${NGINX_WWWDIR}
-    mv ${D}/usr/html ${D}${NGINX_WWWDIR}/
+    mv ${D}${exec_prefix}/html ${D}${NGINX_WWWDIR}/
     chown ${NGINX_USER}:www-data -R ${D}${NGINX_WWWDIR}
 
     install -d ${D}${sysconfdir}/init.d
@@ -134,7 +136,7 @@ do_install () {
         sed -i -e 's,@SYSCONFDIR@,${sysconfdir},g' \
             -e 's,@LOCALSTATEDIR@,${localstatedir},g' \
             -e 's,@SBINDIR@,${sbindir},g' \
-            -e 's,@BINDIR@,${bindir},g' \
+            -e 's,@BASE_BINDIR@,${base_bindir},g' \
             ${D}${systemd_unitdir}/system/nginx.service
     fi
 }

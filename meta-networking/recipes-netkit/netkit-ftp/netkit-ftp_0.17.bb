@@ -1,7 +1,7 @@
 DESCRIPTION = "netkit-ft includes the ftp client."
 SECTION = "net"
 HOMEPAGE="ftp://ftp.uk.linux.org/pub/linux/Networking/netkit"
-LICENSE = "BSD"
+LICENSE = "BSD-4-Clause"
 
 LIC_FILES_CHKSUM = "file://ftp/ftp.c;beginline=2;endline=3;md5=2d40a75a50d83b8f6317b3f53db72bfa"
 
@@ -17,6 +17,8 @@ SRC_URI[patch31.md5sum] = "93d71e28ce70df69e080c7f90da63cac"
 SRC_URI[patch31.sha256sum] = "4edd46a32d70daa7ba00f0ebf0118dc5d17dff23d6e46aa21a2722be2e22d1c1"
 
 inherit autotools-brokensep
+
+CLEANBROKEN = "1"
 
 do_configure () {
     ./configure --prefix=${prefix}

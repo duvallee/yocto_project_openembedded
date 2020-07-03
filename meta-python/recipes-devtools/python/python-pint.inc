@@ -3,13 +3,28 @@ HOMEPAGE = "https://github.com/AlexandreDecan/python-intervals"
 SECTION = "devel/python"
 
 LICENSE = "BSD-3-Clause"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/BSD-3-Clause;md5=550794465ba0ec5312d6919e203a55f9"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=bccf824202692270a1e0829a62e3f47b"
 
 PYPI_PACKAGE := "Pint"
 
-inherit pypi
+inherit pypi ptest
 
-SRC_URI[md5sum] = "e1f80f3f8fc4e61f68ad3912db26b3a8"
-SRC_URI[sha256sum] = "afcf31443a478c32bbac4b00337ee9026a13d0e2ac83d30c79151462513bb0d4"
+SRC_URI[md5sum] = "3a8f29c2a30efd35af4b5c5a224ef965"
+SRC_URI[sha256sum] = "308f1070500e102f83b6adfca6db53debfce2ffc5d3cbe3f6c367da359b5cf4d"
 
-BBCLASSEXTEND = "native"
+DEPENDS += "python3-setuptools-scm-native"
+
+BBCLASSEXTEND = "native nativesdk"
+
+SRC_URI += " \
+	file://run-ptest \
+"
+
+RDEPENDS_${PN}-ptest += " \
+	${PYTHON_PN}-pytest \
+"
+
+do_install_ptest() {
+	install -d ${D}${PTEST_PATH}/testsuite
+	cp -rf ${S}/pint/testsuite/* ${D}${PTEST_PATH}/testsuite/
+}

@@ -1,9 +1,9 @@
 SUMMARY = "A cross-platform process and system utilities module for Python"
-LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=0f02e99f7f3c9a7fe8ecfc5d44c2be62"
+LICENSE = "BSD-3-Clause"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=e35fd9f271d19d5f742f20a9d1f8bb8b"
 
-SRC_URI[md5sum] = "765a4179f02c149794a6e99d890dfa4b"
-SRC_URI[sha256sum] = "fa0a570e0a30b9dd618bffbece590ae15726b47f9f1eaf7518dfb35f4d7dcd21"
+SRC_URI[md5sum] = "ed7b0f11ed214bcabbe76b7cf52f3ae3"
+SRC_URI[sha256sum] = "685ec16ca14d079455892f25bd124df26ff9137664af445563c1bd36629b5e0e"
 
 PACKAGES =+ "${PN}-tests"
 
@@ -18,3 +18,5 @@ RDEPENDS_${PN} += " \
     ${PYTHON_PN}-threading \
     ${PYTHON_PN}-xml \
 "
+
+BBCLASSEXTEND = "native nativesdk"
