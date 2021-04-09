@@ -3,7 +3,8 @@ require wireguard.inc
 SRCREV = "43f57dac7b8305024f83addc533c9eede6509129"
 
 SRC_URI = "git://git.zx2c4.com/wireguard-linux-compat \
-           file://0001-compat-SYM_FUNC_-START-END-were-backported-to-5.4.patch"
+           file://0001-compat-SYM_FUNC_-START-END-were-backported-to-5.4.patch \
+           file://0001-compat-icmp_ndo_send-functions-were-backported-exten.patch "
 
 inherit module kernel-module-split
 
@@ -21,13 +22,6 @@ MAKE_TARGETS = "module"
 
 RRECOMMENDS_${PN} = "kernel-module-xt-hashlimit"
 MODULE_NAME = "wireguard"
-
-# Kernel module packages MUST begin with 'kernel-module-', otherwise
-# multilib image generation can fail.
-#
-# The following line is only necessary if the recipe name does not begin
-# with kernel-module-.
-PKG_${PN} = "kernel-module-${MODULE_NAME}"
 
 module_do_install() {
     install -d ${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel/${MODULE_NAME}
