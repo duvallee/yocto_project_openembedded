@@ -1,4 +1,4 @@
-SUMMARY = "Simple bootsplash for systemd systems"
+DESCRIPTION = "Simple bootsplash for systemd systems"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 
@@ -7,10 +7,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 PV = "0.3"
 PR = "r1"
 
-SRCREV = "ef2e1a390e768e21e6a6268977580ee129a96633"
-SRC_URI = "git://github.com/lucasdemarchi/dietsplash.git \
-           file://0001-configure.ac-Do-not-demand-linker-hash-style.patch \
-           "
+SRCREV = "3098e4ad8aa07ad90b2a4413c0abeb6dcd8f1233"
+SRC_URI = "git://github.com/lucasdemarchi/dietsplash.git;protocol=git"
 
 inherit autotools
 

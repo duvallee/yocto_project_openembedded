@@ -2,18 +2,15 @@ DESCRIPTION = "Libdivecomputer is a cross-platform and open source library for c
 HOMEPAGE = "http://www.divesoftware.org/libdc/"
 
 LICENSE = "LGPLv2.1"
-LIC_FILES_CHKSUM = "file://COPYING;md5=243b725d71bb5df4a1e5920b344b86ad"
+LIC_FILES_CHKSUM = "file://COPYING;md5=fbc093901857fcd118f065f900982c24"
 
 DEPENDS = "libusb1"
 
 inherit autotools pkgconfig
 
-PV = "0.6.0"
-
-SRCREV = "1195abc2f4acc7b10175d570ec73549d0938c83e"
-SRC_URI = "git://github.com/libdivecomputer/libdivecomputer.git;protocol=https \
-          "
-
+PV = "0.0.0"
+SRCREV = "b7a6be15ca58cc8f89fbc8fa1a4c840e13d51092"
+SRC_URI = "git://libdivecomputer.git.sourceforge.net/gitroot/libdivecomputer/libdivecomputer"
 S = "${WORKDIR}/git"
 
 

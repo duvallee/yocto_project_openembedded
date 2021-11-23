@@ -1,6 +1,6 @@
-SUMMARY = "A very small and simple terminal emulator"
+DESCRIPTION = "A very small and simple terminal emulator"
 SECTION = "x11/applications"
-DEPENDS = "vte9"
+DEPENDS = "vte"
 
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://main.c;start_line=5;end_line=16;md5=9ae4bf20caf291afa94530026bd15229"
@@ -11,19 +11,17 @@ SRC_URI = "git://github.com/OSSystems/toscoterm.git"
 
 S = "${WORKDIR}/git"
 
-inherit features_check gitpkgv pkgconfig
-
-REQUIRED_DISTRO_FEATURES = "x11"
+inherit gitpkgv pkgconfig
 
 do_compile() {
-    oe_runmake \
-        CC="${CC}" \
-        CFLAGS="`pkg-config --cflags vte`${CFLAGS}" \
-        LDFLAGS="`pkg-config --libs vte` ${LDFLAGS}"
+	oe_runmake \
+		CC="${CC}" \
+		CFLAGS="`pkg-config --cflags vte`${CFLAGS}" \
+		LDFLAGS="`pkg-config --libs vte` ${LDFLAGS}"
 }
 
 do_install() {
-    oe_runmake PREFIX="${prefix}" DESTDIR="${D}" install
+	oe_runmake PREFIX="${prefix}" DESTDIR="${D}" install
 }
 
-RDEPENDS_${PN}_append_libc-glibc = " glibc-gconv-ibm437"
+RDEPENDS_${PN}_append_libc-glibc += "glibc-gconv-ibm437"

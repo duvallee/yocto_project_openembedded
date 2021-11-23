@@ -1,6 +1,4 @@
-inherit xfce features_check
+inherit xfce
 
-REQUIRED_DISTRO_FEATURES = "x11"
-
-SRC_URI = "http://archive.xfce.org/src/apps/${BPN}/${@xfce_verdir("${PV}")}/${BPN}-${PV}.tar.bz2"
+SRC_URI = "http://archive.xfce.org/src/apps/${BPN}/${@'${PV}'[0:3]}/${BPN}-${PV}.tar.bz2"
 

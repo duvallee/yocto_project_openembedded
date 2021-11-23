@@ -1,19 +1,9 @@
-Subject: [PATCH] From c084c8349d1780980e232cb28b60a109e3d89438 Mon Sep 17
- 00:00:00 2001 From: Koen Kooi <koen@dominion.thruhere.net> Date: Wed, 2 Nov
- 2011 16:54:57 +0100 Subject: [PATCH] Upstream-Status: Pending
-
-update patch to version 7.4.4
-Signed-off-by: Changqing Li <changqing.li@windriver.com>
----
- ext/imap/config.m4 | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/ext/imap/config.m4 b/ext/imap/config.m4
-index 5086a31..0e938bd 100644
---- a/ext/imap/config.m4
-+++ b/ext/imap/config.m4
-@@ -110,7 +110,7 @@ if test "$PHP_IMAP" != "no"; then
-     PHP_NEW_EXTENSION(imap, php_imap.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+Index: php-5.2.11/ext/imap/config.m4
+===================================================================
+--- php-5.2.11.orig/ext/imap/config.m4	2009-12-10 12:27:52.800974533 -0700
++++ php-5.2.11/ext/imap/config.m4	2009-12-10 12:28:33.720976583 -0700
+@@ -103,7 +103,7 @@
+     PHP_NEW_EXTENSION(imap, php_imap.c, $ext_shared)
      AC_DEFINE(HAVE_IMAP,1,[ ])
  
 -    for i in $PHP_IMAP /usr/local /usr; do
@@ -21,13 +11,13 @@ index 5086a31..0e938bd 100644
        IMAP_INC_CHK()
        el[]IMAP_INC_CHK(/include/c-client)
        el[]IMAP_INC_CHK(/include/imap)
-@@ -199,13 +199,7 @@ if test "$PHP_IMAP" != "no"; then
+@@ -192,13 +192,7 @@
        AC_MSG_ERROR(Cannot find rfc822.h. Please check your c-client installation.)
      fi
  
--    if test ! -r "$IMAP_DIR/c-client/libc-client.a" && test -r "$IMAP_DIR/c-client/c-client.a" ; then
+-    if test -r "$IMAP_DIR/c-client/c-client.a"; then
 -      ln -s "$IMAP_DIR/c-client/c-client.a" "$IMAP_DIR/c-client/libc-client.a" >/dev/null 2>&1
--    elif test ! -r "$IMAP_DIR/$PHP_LIBDIR/libc-client.a" && test -r "$IMAP_DIR/$PHP_LIBDIR/c-client.a"; then
+-    elif test -r "$IMAP_DIR/$PHP_LIBDIR/c-client.a"; then
 -      ln -s "$IMAP_DIR/$PHP_LIBDIR/c-client.a" "$IMAP_DIR/$PHP_LIBDIR/libc-client.a" >/dev/null 2>&1
 -    fi
 -
@@ -36,6 +26,16 @@ index 5086a31..0e938bd 100644
        IMAP_LIB=$lib
        IMAP_LIB_CHK($PHP_LIBDIR)
        IMAP_LIB_CHK(c-client)
--- 
-2.7.4
-
+Index: php-5.2.11/acinclude.m4
+===================================================================
+--- php-5.2.11.orig/acinclude.m4	2009-12-10 12:37:13.134722881 -0700
++++ php-5.2.11/acinclude.m4	2009-12-10 12:37:39.342007053 -0700
+@@ -2338,7 +2338,7 @@
+       PHP_OPENSSL_DIR="/usr/local/ssl /usr/local /usr /usr/local/openssl"
+     fi
+ 
+-    for i in $PHP_OPENSSL_DIR; do
++    for i in $PHP_OPENSSL_DIR $PHP_OPENSSL_DIR/usr; do
+       if test -r $i/include/openssl/evp.h; then
+         OPENSSL_INCDIR=$i/include
+       fi

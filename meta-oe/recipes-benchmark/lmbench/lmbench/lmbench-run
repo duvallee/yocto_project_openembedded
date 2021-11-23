@@ -4,6 +4,7 @@
 # Javier Fernandez-Sanguino.
 # Distributed under the GPL
 SHAREDIR=/usr/share/lmbench/
+BINDIR=/usr/lib/lmbench/
 SCRIPTSDIR=$SHAREDIR/scripts
 RESULTSDIR=$SHAREDIR/results
 CONFIG=/var/lib/lmbench/config/`$SCRIPTSDIR/config`
