@@ -1,11 +1,26 @@
---- php/configure.in.orig	2011-03-12 02:13:19.000000000 +0100
-+++ php/configure.in	2011-03-12 02:14:05.000000000 +0100
-@@ -1216,7 +1216,7 @@
-   PHP_INSTALL_CLI_TARGET="install-cli"
-   PHP_ADD_SOURCES(sapi/cli, php_cli.c php_cli_readline.c,, cli)
-   PHP_INSTALLED_SAPIS="cli $PHP_SAPI"
+Subject: [PATCH] rom d251b5aa3d23803d016ca16818e2e1d2f2b70a02 Mon Sep 17
+ 00:00:00 2001 From: Koen Kooi <koen@dominion.thruhere.net> Date: Wed, 2 Nov
+ 2011 16:54:57 +0100 Subject: [PATCH] Upstream-Status: Inappriate
+
+update patch to version 7.4.4
+Signed-off-by: Changqing Li <changqing.li@windriver.com>
+---
+ sapi/cli/config.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sapi/cli/config.m4 b/sapi/cli/config.m4
+index 917d45f..aaf1e27 100644
+--- a/sapi/cli/config.m4
++++ b/sapi/cli/config.m4
+@@ -47,7 +47,7 @@ if test "$PHP_CLI" != "no"; then
+   esac
+ 
+   dnl Set executable for tests.
 -  PHP_EXECUTABLE="\$(top_builddir)/\$(SAPI_CLI_PATH)"
 +  PHP_EXECUTABLE="${PHP_NATIVE_DIR}/php"
- else
-   PHP_INSTALLED_SAPIS="$PHP_SAPI"
- fi
+   PHP_SUBST(PHP_EXECUTABLE)
+ 
+   dnl Expose to Makefile.
+-- 
+2.7.4
+

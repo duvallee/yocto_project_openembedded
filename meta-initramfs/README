@@ -11,8 +11,8 @@ Dependencies
 
 This layer depends on:
 
-URI: git://git.openembedded.org/openembedded-core
-branch: master
+URI: git://github.com/openembedded/oe-core.git
+branch: dunfell
 revision: HEAD
 
 
@@ -20,12 +20,12 @@ Maintenance
 -----------
 
 Send patches / pull requests to openembedded-devel@lists.openembedded.org
-with '[meta-initramfs]' in the subject.
+with '[meta-initramfs][dunfell]' in the subject.
 
-When sending single patches, please using something like 'git send-email -1 --to openembedded-devel@lists.openembedded.org --subject-prefix=meta-initramfs][PATCH'
+When sending single patches, please using something like:
+'git send-email -M -1 --to openembedded-devel@lists.openembedded.org --subject-prefix=meta-initramfs][dunfell][PATCH'
 
-Layer maintainers: Andrea Adami <andrea.adami@gmail.com>
-                   Paul Eggleton <paul.eggleton@linux.intel.com>
+dunfell maintainer: Armin Kuster <akuster808@gmail.com>
 
 
 License

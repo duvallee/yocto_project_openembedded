@@ -7,8 +7,8 @@
 #   NN equals the total number of revs up to SRCREV
 #   GITHASH is SRCREV's (full) hash
 #
-# - GITPKGVTAG which is the output of 'git describe' allowing for
-#   automatic versioning
+# - GITPKGVTAG which is the output of 'git describe --tags --exact-match'
+#   allowing for automatic versioning
 #
 # gitpkgv.bbclass assumes the git repository has been cloned, and
 # contains SRCREV. So ${GITPKGV} and ${GITPKGVTAG} should never be
@@ -40,52 +40,82 @@
 GITPKGV = "${@get_git_pkgv(d, False)}"
 GITPKGVTAG = "${@get_git_pkgv(d, True)}"
 
-def gitpkgv_drop_tag_prefix(version):
+# This regexp is used to drop unwanted parts of the found tags. Any matching
+# groups will be concatenated to yield the final version.
+GITPKGV_TAG_REGEXP ??= "v(\d.*)"
+
+def gitpkgv_drop_tag_prefix(d, version):
     import re
-    if re.match("v\d", version):
-        return version[1:]
+
+    m = re.match(d.getVar('GITPKGV_TAG_REGEXP'), version)
+    if m:
+        return ''.join(group for group in m.groups() if group)
     else:
         return version
 
 def get_git_pkgv(d, use_tags):
     import os
     import bb
+    from pipes import quote
 
-    src_uri = bb.data.getVar('SRC_URI', d, 1).split()
+    src_uri = d.getVar('SRC_URI').split()
     fetcher = bb.fetch2.Fetch(src_uri, d)
     ud = fetcher.ud
 
     #
     # If SRCREV_FORMAT is set respect it for tags
     #
-    format = bb.data.getVar('SRCREV_FORMAT', d, True)
+    format = d.getVar('SRCREV_FORMAT')
     if not format:
-        format = 'default'
+        names = []
+        for url in ud.values():
+            if url.type == 'git' or url.type == 'gitsm':
+                names.extend(url.revisions.keys())
+        if len(names) > 0:
+            format = '_'.join(names)
+        else:
+            format = 'default'
 
     found = False
     for url in ud.values():
-        if url.type == 'git':
+        if url.type == 'git' or url.type == 'gitsm':
             for name, rev in url.revisions.items():
                 if not os.path.exists(url.localpath):
                     return None
 
                 found = True
 
-                cwd = os.getcwd()
-                os.chdir(url.localpath)
+                vars = { 'repodir' : quote(url.localpath),
+                         'rev' : quote(rev) }
 
-                commits = bb.fetch2.runfetchcmd("git rev-list %s -- 2> /dev/null | wc -l" % rev, d, quiet=True).strip()
+                rev = bb.fetch2.get_srcrev(d).split('+')[1]
+                rev_file = os.path.join(url.localpath, "oe-gitpkgv_" + rev)
+
+                if not os.path.exists(rev_file) or os.path.getsize(rev_file)==0:
+                    commits = bb.fetch2.runfetchcmd(
+                        "git --git-dir=%(repodir)s rev-list %(rev)s -- 2>/dev/null | wc -l"
+                        % vars, d, quiet=True).strip().lstrip('0')
+
+                    if commits != "":
+                        oe.path.remove(rev_file, recurse=False)
+                        with open(rev_file, "w") as f:
+                            f.write("%d\n" % int(commits))
+                    else:
+                        commits = "0"
+                else:
+                    with open(rev_file, "r") as f:
+                        commits = f.readline(128).strip()
 
                 if use_tags:
                     try:
-                        output = bb.fetch2.runfetchcmd("git describe %s 2>/dev/null" % rev, d, quiet=True).strip()
-                        ver = gitpkgv_drop_tag_prefix(output)
+                        output = bb.fetch2.runfetchcmd(
+                            "git --git-dir=%(repodir)s describe %(rev)s --tags --exact-match 2>/dev/null"
+                            % vars, d, quiet=True).strip()
+                        ver = gitpkgv_drop_tag_prefix(d, output)
                     except Exception:
-                        ver = "0.0-%s-g%s" % (commits, rev[:7])
+                        ver = "0.0-%s-g%s" % (commits, vars['rev'][:7])
                 else:
-                    ver = "%s+%s" % (commits, rev[:7])
-
-                os.chdir(cwd)
+                    ver = "%s+%s" % (commits, vars['rev'][:7])
 
                 format = format.replace(name, ver)
 

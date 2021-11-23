@@ -13,42 +13,45 @@ def git_drop_tag_prefix(version):
         return version
 
 GIT_TAGADJUST = "git_drop_tag_prefix(version)"
-GITVER = "${@get_git_pv('${S}', d, tagadjust=lambda version:${GIT_TAGADJUST})}"
-GITSHA = "${@get_git_hash('${S}', d)}"
+GITVER = "${@get_git_pv(d, tagadjust=lambda version:${GIT_TAGADJUST})}"
+GITSHA = "${@get_git_hash(d)}"
 
-def get_git_hash(path, d):
-    return oe_run(d, ["git", "rev-parse", "--short", "HEAD"], cwd=path).rstrip()
+def gitrev_run(cmd, path):
+    (output, error) = bb.process.run(cmd, cwd=path)
+    return output.rstrip()
 
-def get_git_pv(path, d, tagadjust=None):
+def get_git_pv(d, tagadjust=None):
     import os
-    import oe.process
 
-    gitdir = os.path.abspath(os.path.join(d.getVar("S", True), ".git"))
-    def git(cmd):
-        try:
-            return oe_run(d, ["git"] + cmd, cwd=gitdir).rstrip()
-        except oe.process.CmdError, exc:
-            bb.fatal(str(exc))
-
+    srcdir = d.getVar("EXTERNALSRC") or d.getVar("S")
+    gitdir = os.path.abspath(os.path.join(srcdir, ".git"))
     try:
-        ver = oe_run(d, ["git", "describe", "--tags"], cwd=gitdir).rstrip()
-    except Exception, exc:
-        bb.fatal(str(exc))
-
-    if not ver:
+        ver = gitrev_run("git describe --tags", gitdir)
+    except:
         try:
-            ver = get_git_hash(gitdir, d)
-        except Exception, exc:
-            bb.fatal(str(exc))
+            ver = gitrev_run("git rev-parse --short HEAD", gitdir)
+            if ver:
+                return "0.0+%s" % ver
+            else:
+                return "0.0"
 
-        if ver:
-            return "0.0+%s" % ver
-        else:
-            return "0.0"
-    else:
-        if tagadjust:
-            ver = tagadjust(ver)
-        return ver
+        except Exception as exc:
+            raise bb.parse.SkipRecipe(str(exc))
+
+    if ver and tagadjust:
+        ver = tagadjust(ver)
+    return ver
+
+def get_git_hash(d):
+    import os
+
+    srcdir = d.getVar("EXTERNALSRC") or d.getVar("S")
+    gitdir = os.path.abspath(os.path.join(srcdir, ".git"))
+    try:
+        rev = gitrev_run("git rev-list HEAD -1", gitdir)
+        return rev[:7]
+    except Exception as exc:
+        bb.fatal(str(exc))
 
 def mark_recipe_dependencies(path, d):
     from bb.parse import mark_dependency
@@ -63,8 +66,8 @@ def mark_recipe_dependencies(path, d):
     mark_dependency(d, os.path.join(gitdir, "index"))
 
     try:
-        ref = oe_run(d, ["git", "symbolic-ref", "-q", "HEAD"], cwd=gitdir).rstrip()
-    except oe.process.CmdError:
+        ref = gitrev_run("git symbolic-ref -q HEAD", gitdir)
+    except bb.process.CmdError:
         pass
     else:
         if ref:
@@ -76,5 +79,6 @@ def mark_recipe_dependencies(path, d):
         mark_dependency(d, tagdir)
 
 python () {
-    mark_recipe_dependencies(d.getVar("S", True), d)
+    srcdir = d.getVar("EXTERNALSRC") or d.getVar("S")
+    mark_recipe_dependencies(srcdir, d)
 }
