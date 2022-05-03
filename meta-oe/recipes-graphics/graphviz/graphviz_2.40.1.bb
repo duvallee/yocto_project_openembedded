@@ -24,7 +24,7 @@ inherit autotools-brokensep pkgconfig gettext
 # https://github.com/ellson/MOTHBALLED-graphviz/releases/tag/stable_release_2.40.1
 # https://gitlab.com/graphviz/graphviz/-/commit/67cd2e5121379a38e0801cc05cce5033f8a2a609
 SRCREV = "67cd2e5121379a38e0801cc05cce5033f8a2a609"
-SRC_URI = "git://gitlab.com/${BPN}/${BPN}.git \
+SRC_URI = "git://gitlab.com/${BPN}/${BPN}.git;branch=master \
            file://0001-plugin-pango-Include-freetype-headers-explicitly.patch \
 "
 # Use native mkdefs
@@ -54,6 +54,17 @@ do_install_append_class-native() {
     # install mkdefs for target build
     install -m755 ${B}/lib/gvpr/mkdefs ${D}${bindir}
 }
+
+# create /usr/lib/graphviz/config6
+graphviz_sstate_postinst() {
+    mkdir -p ${SYSROOT_DESTDIR}${bindir}
+    dest=${SYSROOT_DESTDIR}${bindir}/postinst-${PN}
+    echo '#!/bin/sh' > $dest
+    echo '' >> $dest
+    echo 'dot -c' >> $dest
+    chmod 0755 $dest
+}
+SYSROOT_PREPROCESS_FUNCS_append_class-native = " graphviz_sstate_postinst"
 
 PACKAGES =+ "${PN}-python ${PN}-perl ${PN}-demo"
 

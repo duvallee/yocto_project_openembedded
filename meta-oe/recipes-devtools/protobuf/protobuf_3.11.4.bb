@@ -12,11 +12,12 @@ DEPENDS_append_class-target = " protobuf-native"
 
 SRCREV = "d0bfd5221182da1a7cc280f3337b5e41a89539cf"
 
-SRC_URI = "git://github.com/google/protobuf.git;branch=3.11.x \
+SRC_URI = "git://github.com/google/protobuf.git;branch=3.11.x;protocol=https \
            file://run-ptest \
            file://0001-protobuf-fix-configure-error.patch \
            file://0001-Makefile.am-include-descriptor.cc-when-building-libp.patch \
            file://0001-examples-Makefile-respect-CXX-LDFLAGS-variables-fix-.patch \
+           file://CVE-2021-22570.patch \
 "
 S = "${WORKDIR}/git"
 
